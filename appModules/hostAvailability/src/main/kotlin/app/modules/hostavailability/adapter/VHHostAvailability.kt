@@ -94,6 +94,11 @@ class VHHostAvailability(
         setParticipantList(hostItem.participantUserList)
         handleSwipeTextAndIcon(hostItem)
 
+        if (hostItem.isSwipeMenuOpened)
+            binding.hostAvailabilityRootSwipe.openEndMenu(false)
+        else
+            binding.hostAvailabilityRootSwipe.closeEndMenu(false)
+
         val statusColor = if(hostItem.availability.color.isEmpty())
             Color.BLUE
         else
