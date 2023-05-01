@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.isGone
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import app.modules.hostavailability.R
 import app.modules.hostavailability.databinding.ItemHostAvailabilityBinding
@@ -18,14 +20,34 @@ import app.reprator.base_android.binding.imageLoad
 import app.reprator.base_android.extensions.appColorStateList
 import app.reprator.base_android.extensions.appDimension
 import app.reprator.base_android.extensions.appString
+import app.reprator.base_android.widgets.SwipeLayout
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 
 class VHHostAvailability(
-    private val binding: ItemHostAvailabilityBinding, private val dateUtils: DateUtils
+    val binding: ItemHostAvailabilityBinding,
+    private val itemCallback: HostAvailabilityItemCallback, private val dateUtils: DateUtils
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    val swipeListener = object : SwipeLayout.Listener {
+
+        override fun onSwipe(menuView: View, swipeOffset: Float) {
+            super.onSwipe(menuView, swipeOffset)
+        }
+
+        override fun onSwipeStateChanged(menuView: View, newState: Int) {
+            super.onSwipeStateChanged(menuView, newState)
+        }
+
+        override fun onMenuClosed(menuView: View) {
+            itemCallback.swipeClose(bindingAdapterPosition)
+        }
+
+        override fun onMenuOpened(menuView: View) {
+            itemCallback.swipeOpen(bindingAdapterPosition)
+        }
+    }
 
     private val viewContext: () -> Context = {
         binding.root.context

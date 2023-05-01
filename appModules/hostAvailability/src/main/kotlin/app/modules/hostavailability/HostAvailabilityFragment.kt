@@ -24,7 +24,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import app.modules.hostavailability.adapter.HostAvailabilityListAdapter
+import app.modules.hostavailability.adapter.HostAvailabilityItemCallback
 import app.modules.hostavailability.databinding.FragmentHostAvailabilityBinding
+import app.reprator.base.actions.Logger
 import app.reprator.base_android.util.ItemOffsetDecoration
 import app.reprator.base_android.viewDelegation.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +34,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability) {
+class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability), HostAvailabilityItemCallback {
+
+    @Inject
+    lateinit var logger: Logger
 
     @Inject
     lateinit var hostAvailabilityListAdapter: HostAvailabilityListAdapter
@@ -70,7 +75,6 @@ class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability) {
     }
 
     private fun initializeObserver() {
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.hostAvailabilityList.collect {
@@ -78,6 +82,17 @@ class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability) {
                 }
             }
         }
+    }
 
+    override fun markFavouriteOrUnFavourite(position: Int) {
+        logger.e("vikram fav:: $position")
+    }
+
+    override fun swipeOpen(position: Int) {
+        logger.e("vikram swipeOpen:: $position")
+    }
+
+    override fun swipeClose(position: Int) {
+        logger.e("vikram swipeClose:: $position")
     }
 }
