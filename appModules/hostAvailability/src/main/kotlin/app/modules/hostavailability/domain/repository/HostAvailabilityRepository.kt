@@ -7,4 +7,10 @@ import kotlinx.coroutines.flow.Flow
 interface HostAvailabilityRepository {
     suspend fun getHostAvailabilityRepository():
             Flow<AppResult<ModalHostContainer>>
+
+    suspend fun markHostAsFavourite(skillName: String, dictionaryType: String):
+            Flow<AppResult<Boolean>>
+
+    suspend fun removeHostAsFavourite(skillName: String):
+            Flow<AppResult<Boolean>>
 }
