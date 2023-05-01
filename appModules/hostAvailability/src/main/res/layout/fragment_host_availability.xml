@@ -1,22 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.text.TextUtils"/>
 
         <variable
                 name="viewModal"
                 type="app.modules.hostavailability.HostAvailabilityViewModal"/>
     </data>
 
-    <LinearLayout
+    <FrameLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-        <TextView
+            android:layout_height="match_parent">
 
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Hello world"/>
-    </LinearLayout>
+                android:orientation="vertical">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/hostAvailabilityToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="?attr/actionBarSize"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:title="@{viewModal.headerItem.headerTitle}"/>
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/hostAvailabilitySwipe"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    goneUnless="@{viewModal.hostAvailabilityList.size() > 0}"
+                    app:onRefreshListener="@{() -> viewModal.onRefresh()}"
+                    app:refreshing="@{viewModal.swipeLoading}"
+                    snackBar="@{viewModal.swipeErrorMsg}">
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/hostAvailabilityRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:clipToPadding="false"
+                        android:scrollbars="none"
+                        app:layoutManager="LinearLayoutManager"
+                        tools:itemCount="15"/>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </LinearLayout>
+
+        <include
+                android:id="@+id/hostAvailability_loaderErrorHandler"
+                clickListener="@{() -> viewModal.retryHostAvailabilityList()}"
+                exceptionError="@{viewModal.errorMsg}"
+                isEmpty="@{TextUtils.isEmpty(viewModal.errorMsg) &amp;&amp; !viewModal.isLoading &amp;&amp; viewModal.hostAvailabilityList.empty }"
+                isError="@{TextUtils.isEmpty(viewModal.errorMsg) ? false : true}"
+                isLoading="@{viewModal.isLoading}"
+                layout="@layout/layout_loader_error_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+    </FrameLayout>
 </layout>
