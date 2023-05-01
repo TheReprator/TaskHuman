@@ -38,6 +38,10 @@ class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability) {
             viewModal = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
+        if (null == savedInstanceState) {
+            viewModel.fetchHostAvailability()
+        }
     }
 
 }
