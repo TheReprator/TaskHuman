@@ -2,16 +2,21 @@ package app.modules.hostavailability.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import app.modules.hostavailability.R
 import app.modules.hostavailability.databinding.ItemHostAvailabilityBinding
+import app.modules.hostavailability.databinding.ItemParticipantPicBinding
 import app.modules.hostavailability.modal.ModalAvailability
 import app.modules.hostavailability.modal.ModalHostItem
 import app.reprator.base.actions.DateUtils
+import app.reprator.base_android.binding.imageLoad
 import app.reprator.base_android.extensions.appColorStateList
+import app.reprator.base_android.extensions.appDimension
 import app.reprator.base_android.extensions.appString
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -61,11 +66,39 @@ class VHHostAvailability(
     fun bindItem(hostItem: ModalHostItem) {
         binding.hostAvailabilityTitle.text = hostItem.title
         setAvailabilityTime(hostItem.availability)
+        setParticipantList(hostItem.participantUserList)
         val statusColor = if (hostItem.availability.color.isEmpty())
             Color.BLUE
         else
             Color.parseColor(hostItem.availability.color)
         binding.hostAvailabilityStatusView.setBackgroundColor(statusColor)
+    }
+
+    private fun setParticipantList(participantPicList: List<String>) {
+        with(binding.hostAvailabilityParticipantPicContainer) {
+            removeAllViews()
+
+            val layoutInflator = viewContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+            participantPicList.forEachIndexed { index, item ->
+                val participantView = ItemParticipantPicBinding.inflate(layoutInflator, null, false).root
+
+                val imageDimension = viewContext().appDimension(R.dimen.participant_dimension)
+                val layoutParam = LinearLayout.LayoutParams(imageDimension, imageDimension)
+
+                val startMargin = if(0 == index)
+                    0
+                else
+                    viewContext().appDimension(R.dimen.participant_pic_startMargin)
+
+                layoutParam.setMargins(startMargin, 0, 0, 0)
+                participantView.layoutParams = layoutParam
+
+                addView(participantView)
+
+                participantView.imageLoad(item)
+            }
+        }
     }
 
     private fun setAvailabilityTime(item: ModalAvailability) {
