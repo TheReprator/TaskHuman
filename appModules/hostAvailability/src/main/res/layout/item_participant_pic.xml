@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.imageview.ShapeableImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/hostAvailabilityParticipantPic"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        app:strokeWidth="@dimen/participant_stroke_width"
+        app:strokeColor="@android:color/white"
+        android:layout_width="@dimen/participant_dimension"
+        android:layout_height="@dimen/participant_dimension"
+        android:padding="@dimen/participant_padding"
+/>

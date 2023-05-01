@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_swipe">5dp</dimen>
+    <dimen name="margin_all_view">15dp</dimen>
+    <dimen name="size_status">20dp</dimen>
+    <dimen name="stroke_status">2dp</dimen>
+    <dimen name="padding_status">1dp</dimen>
+    <dimen name="margin_top_participant">40dp</dimen>
+    <dimen name="margin_between_participant_time">10dp</dimen>
+    <dimen name="dimension_minimum_swipe_icon">30dp</dimen>
+    <dimen name="minimum_width_swipe">130dp</dimen>
+    <dimen name="participant_stroke_width">2dp</dimen>
+    <dimen name="participant_dimension">40dp</dimen>
+    <dimen name="participant_padding">1dp</dimen>
+    <dimen name="participant_pic_startMargin">-10dp</dimen>
+</resources>
