@@ -18,6 +18,7 @@ package app.modules.hostavailability
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.modules.hostavailability.domain.usecase.HostAvailabilityFavouriteUseCase
 import app.modules.hostavailability.domain.usecase.HostAvailabilityUseCase
 import app.modules.hostavailability.modal.ModalHeader
 import app.modules.hostavailability.modal.ModalHostItem
@@ -26,20 +27,22 @@ import app.reprator.base.useCases.AppError
 import app.reprator.base.useCases.AppSuccess
 import app.reprator.base.util.AppCoroutineDispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class HostAvailabilityViewModal @Inject constructor(
     private val hostAvailabilityUseCase: HostAvailabilityUseCase,
+    private val favouriteUseCase: HostAvailabilityFavouriteUseCase,
     private val coroutineDispatcherProvider: AppCoroutineDispatchers
 ) : ViewModel() {
+
+    companion object {
+        const val SECONDS_3 = 3000L
+    }
 
     private val mutex = Mutex()
 
@@ -54,7 +57,7 @@ class HostAvailabilityViewModal @Inject constructor(
     private val _hostAvailabilityList = MutableStateFlow(emptyList<ModalHostItem>())
     val hostAvailabilityList: StateFlow<List<ModalHostItem>> = _hostAvailabilityList
 
-    private val _headerItem = MutableStateFlow(ModalHeader("", ""))
+    private val _headerItem = MutableStateFlow(ModalHeader("",""))
     val headerItem: StateFlow<ModalHeader> = _headerItem
 
     private val _swipeLoading = MutableStateFlow(false)
@@ -137,6 +140,67 @@ class HostAvailabilityViewModal @Inject constructor(
 
     private fun isPositionExist(position: Int): Boolean {
         return ((0 <= position) && (position < hostAvailabilityList.value.size))
+    }
+
+    fun markOrRemoveItemAsFavourite(position: Int) {
+        computationalBlock {
+            if (!isPositionExist(position))
+                return@computationalBlock
+
+            val item = hostAvailabilityList.value[position]
+            val useCase = if (item.isFavourite)
+                favouriteUseCase(item.requestSkillName)
+            else
+                favouriteUseCase(item.requestSkillName, item.requestDictionaryName)
+
+            useCase.flowOn(coroutineDispatcherProvider.io)
+                .collect {
+                    withContext(coroutineDispatcherProvider.main) {
+
+                        when (it) {
+                            is AppSuccess -> {
+                                showShortMessageForSuccess(position)
+                            }
+
+                            is AppError -> {
+                                _swipeErrorMsg.value = it.message ?: it.throwable?.message ?: ""
+                            }
+
+                            else -> throw IllegalArgumentException("Illegal State")
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun showShortMessageForSuccess(position: Int) {
+
+        if (!isPositionExist(position))
+            return
+
+        val shouldShowShortMessage = position == swipeOpenedPosition
+
+        fun updateSpecificItem(shouldShow: Boolean) {
+            val updatedList = hostAvailabilityList.value.toMutableList()
+            val selectedItem = updatedList[position]
+            val updatedItem = if(shouldShow)
+                selectedItem.copy(isFavourite = !selectedItem.isFavourite, showShortMessage = shouldShowShortMessage)
+            else
+                selectedItem.copy(showShortMessage = false)
+
+            updatedList[position] = updatedItem
+            updateListWithSynchronization(updatedList)
+        }
+
+        updateSpecificItem(true)
+
+        if(!shouldShowShortMessage)
+            return
+
+        viewModelScope.launch {
+            delay(SECONDS_3)
+            updateSpecificItem(false)
+        }
     }
 
     fun setSwipeIndex(position: Int, isOpen: Boolean) {

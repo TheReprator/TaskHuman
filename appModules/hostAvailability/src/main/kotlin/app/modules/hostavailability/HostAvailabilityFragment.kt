@@ -92,6 +92,7 @@ class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability), 
 
     override fun markFavouriteOrUnFavourite(position: Int) {
         logger.e("vikram fav:: $position")
+        viewModel.markOrRemoveItemAsFavourite(position)
     }
 
     override fun swipeOpen(position: Int) {
