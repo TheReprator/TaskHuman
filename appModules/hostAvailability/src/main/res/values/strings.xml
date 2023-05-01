@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_availability">%s - %s</string>
+    <string name="host_add_favourite">Add to favourite</string>
+    <string name="host_remove_favourite">Remove favourite</string>
+    <string name="host_short_remove">Removed</string>
+    <string name="host_short_add">Added</string>
+    <string name="host_time_now">Now</string>
+</resources>
