@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+/navigation/build/
+/compositeBuild/.gradle/
+/compositeBuild/build/
+/base-android/build/
+/base/build/

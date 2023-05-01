@@ -16,7 +16,8 @@ include(
     ":app",
     ":base",
     ":base-android",
-    ":navigation"
+    ":navigation",
+    ":appModules:hostAvailability"
 )
 rootProject.buildFileName = "build.gradle.kts"
 rootProject.name = "TaskHuman"

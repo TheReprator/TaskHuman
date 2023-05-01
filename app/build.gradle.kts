@@ -8,6 +8,7 @@ val qaImplementation by configurations
 dependencies {
     implementation(projects.base)
     implementation(projects.baseAndroid)
+    implementation(projects.appModules.hostAvailability)
     implementation(projects.navigation)
 
     implementation(libs.androidx.navigation.fragment)
