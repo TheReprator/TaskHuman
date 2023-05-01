@@ -54,14 +54,17 @@ class VHHostAvailability(
     }
 
     init {
+        binding.hostAvailabilitySwipeIsFavourite.setOnClickListener {
+            itemCallback.markFavouriteOrUnFavourite(bindingAdapterPosition)
+        }
+
         setCornerForSwipe()
     }
 
     private fun setCornerForSwipe() {
 
         val cornerBackground:(shapeAppearanceModel: ShapeAppearanceModel,
-                              fillColor: Int, view: View
-        ) -> Unit = { shapeAppearanceModel, fillColor, view ->
+                              fillColor: Int, view: View) -> Unit = { shapeAppearanceModel, fillColor, view ->
 
             val materialShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
             materialShapeDrawable.fillColor = viewContext().appColorStateList(fillColor)
@@ -89,11 +92,35 @@ class VHHostAvailability(
         binding.hostAvailabilityTitle.text = hostItem.title
         setAvailabilityTime(hostItem.availability)
         setParticipantList(hostItem.participantUserList)
-        val statusColor = if (hostItem.availability.color.isEmpty())
+        handleSwipeTextAndIcon(hostItem)
+
+        val statusColor = if(hostItem.availability.color.isEmpty())
             Color.BLUE
         else
             Color.parseColor(hostItem.availability.color)
         binding.hostAvailabilityStatusView.setBackgroundColor(statusColor)
+    }
+
+    private fun handleSwipeTextAndIcon(hostItem: ModalHostItem) {
+        val text = if(hostItem.showShortMessage) {
+            if (hostItem.isFavourite)
+                R.string.host_short_add
+            else
+                R.string.host_short_remove
+        } else {
+            if (hostItem.isFavourite)
+                R.string.host_remove_favourite
+            else
+                R.string.host_add_favourite
+        }
+
+        val icon = if (hostItem.isFavourite)
+            R.drawable.remove_favorite
+        else
+            R.drawable.icon_favourite
+
+        binding.hostAvailabilitySwipeIsFavourite.setImageResource(icon)
+        binding.hostAvailabilitySwipeText.text = viewContext().appString(text)
     }
 
     private fun setParticipantList(participantPicList: List<String>) {
