@@ -43,6 +43,8 @@ class HostAvailabilityViewModal @Inject constructor(
 
     private val mutex = Mutex()
 
+    private var swipeOpenedPosition = -1
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -52,7 +54,7 @@ class HostAvailabilityViewModal @Inject constructor(
     private val _hostAvailabilityList = MutableStateFlow(emptyList<ModalHostItem>())
     val hostAvailabilityList: StateFlow<List<ModalHostItem>> = _hostAvailabilityList
 
-    private val _headerItem = MutableStateFlow(ModalHeader("",""))
+    private val _headerItem = MutableStateFlow(ModalHeader("", ""))
     val headerItem: StateFlow<ModalHeader> = _headerItem
 
     private val _swipeLoading = MutableStateFlow(false)
@@ -109,6 +111,7 @@ class HostAvailabilityViewModal @Inject constructor(
 
                         when (it) {
                             is AppSuccess -> {
+                                swipeOpenedPosition = -1
                                 _headerItem.value = it.data.header
                                 updateListWithSynchronization(it.data.itemList)
                             }
@@ -128,6 +131,47 @@ class HostAvailabilityViewModal @Inject constructor(
         viewModelScope.launch {
             mutex.withLock {
                 _hostAvailabilityList.value = list
+            }
+        }
+    }
+
+    private fun isPositionExist(position: Int): Boolean {
+        return ((0 <= position) && (position < hostAvailabilityList.value.size))
+    }
+
+    fun setSwipeIndex(position: Int, isOpen: Boolean) {
+        computationalBlock {
+            if (!isPositionExist(position))
+                return@computationalBlock
+
+            val updatedList = hostAvailabilityList.value.toMutableList()
+
+            val updatedMenuItem: (itemPosition: Int, isOpen: Boolean) -> ModalHostItem = { itemPosition, isOpen ->
+                updatedList[itemPosition].copy(isSwipeMenuOpened = isOpen)
+            }
+
+            if (isOpen) {
+                if (swipeOpenedPosition == position)
+                    return@computationalBlock
+
+                if (-1 == swipeOpenedPosition) {
+                    swipeOpenedPosition = position
+                } else {
+                    updatedList[swipeOpenedPosition] = updatedMenuItem(swipeOpenedPosition, false)
+                    swipeOpenedPosition = position
+                }
+                updatedList[position] = updatedMenuItem(position, true)
+            } else {
+                if (-1 == swipeOpenedPosition)
+                    return@computationalBlock
+
+                if (swipeOpenedPosition == position)
+                    swipeOpenedPosition = -1
+                updatedList[position] = updatedMenuItem(position, false)
+            }
+
+            withContext(coroutineDispatcherProvider.main) {
+                updateListWithSynchronization(updatedList)
             }
         }
     }
