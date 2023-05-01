@@ -19,19 +19,25 @@ package app.modules.hostavailability
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import app.modules.hostavailability.databinding.FragmentHostAvailabilityBinding
 import app.reprator.base_android.viewDelegation.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability) {
 
 
     private val binding by viewBinding(FragmentHostAvailabilityBinding::bind)
+    private val viewModel: HostAvailabilityViewModal by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
+            viewModal = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
     }
+
 }
