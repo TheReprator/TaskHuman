@@ -55,6 +55,12 @@ class HostAvailabilityViewModal @Inject constructor(
     private val _headerItem = MutableStateFlow(ModalHeader("",""))
     val headerItem: StateFlow<ModalHeader> = _headerItem
 
+    private val _swipeLoading = MutableStateFlow(false)
+    val swipeLoading: StateFlow<Boolean> = _swipeLoading
+
+    private val _swipeErrorMsg = MutableStateFlow("")
+    val swipeErrorMsg: StateFlow<String> = _swipeErrorMsg
+
     fun fetchHostAvailability() {
         useCaseCall(
             {
@@ -62,6 +68,23 @@ class HostAvailabilityViewModal @Inject constructor(
             },
             {
                 _errorMsg.value = it
+            }
+        )
+    }
+
+    fun retryHostAvailabilityList() {
+        _isLoading.value = true
+        _errorMsg.value = ""
+        fetchHostAvailability()
+    }
+
+    fun onRefresh() {
+        useCaseCall(
+            {
+                _swipeLoading.value = it
+            },
+            {
+                _swipeErrorMsg.value = it
             }
         )
     }
