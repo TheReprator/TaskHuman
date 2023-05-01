@@ -99,6 +99,8 @@ class VHHostAvailability(
         else
             binding.hostAvailabilityRootSwipe.closeEndMenu(false)
 
+        setUpMarginForRootContainer(hostItem.isSwipeMenuOpened)
+
         val statusColor = if(hostItem.availability.color.isEmpty())
             Color.BLUE
         else
@@ -126,6 +128,17 @@ class VHHostAvailability(
 
         binding.hostAvailabilitySwipeIsFavourite.setImageResource(icon)
         binding.hostAvailabilitySwipeText.text = viewContext().appString(text)
+    }
+
+    private fun setUpMarginForRootContainer(isOpen: Boolean) {
+
+        binding.hostAvailabilityRoot.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            val marginDimen = viewContext().resources.getDimensionPixelSize(R.dimen.margin_all_view)
+            if(isOpen)
+                setMargins(marginDimen, marginDimen, 0, marginDimen)
+            else
+                setMargins(marginDimen, marginDimen, marginDimen, marginDimen)
+        }
     }
 
     private fun setParticipantList(participantPicList: List<String>) {
