@@ -27,4 +27,19 @@ class HostAvailabilityDataRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun markHostAsFavourite(skillName: String, dictionaryType: String): Flow<AppResult<Boolean>> {
+        return if (connectionDetector.isInternetAvailable)
+            flowOf(hostAvailabilityRemoteDataSource.markHostAsFavourite(skillName, dictionaryType))
+        else {
+            flowOf(AppError(message = NO_INTERNET))
+        }
+    }
+
+    override suspend fun removeHostAsFavourite(skillName: String): Flow<AppResult<Boolean>> {
+        return if (connectionDetector.isInternetAvailable)
+            flowOf(hostAvailabilityRemoteDataSource.removeHostAsFavourite(skillName))
+        else {
+            flowOf(AppError(message = NO_INTERNET))
+        }
+    }
 }
