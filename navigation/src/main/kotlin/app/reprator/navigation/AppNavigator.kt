@@ -18,8 +18,10 @@ package app.reprator.navigation
 
 import androidx.navigation.NavController
 
-interface AppNavigator
+interface AppNavigator : HostAvailabilityNavigator
 
 fun interface BackNavigator {
     fun navigateToBack(navController: NavController)
 }
+
+interface HostAvailabilityNavigator: BackNavigator

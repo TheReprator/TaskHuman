@@ -16,6 +16,7 @@
 
 package dev.reprator.taskhuman.implementation
 
+import androidx.navigation.NavController
 import app.reprator.navigation.AppNavigator
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
@@ -23,4 +24,7 @@ import javax.inject.Inject
 @ActivityScoped
 class AppNavigatorImpl @Inject constructor() : AppNavigator {
 
+    override fun navigateToBack(navController: NavController) {
+        navController.navigateUp()
+    }
 }
