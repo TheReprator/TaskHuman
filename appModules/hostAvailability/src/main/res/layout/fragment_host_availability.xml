@@ -8,6 +8,10 @@
         <import type="android.text.TextUtils"/>
 
         <variable
+                name="adapter"
+                type="app.modules.hostavailability.adapter.HostAvailabilityListAdapter"/>
+
+        <variable
                 name="viewModal"
                 type="app.modules.hostavailability.HostAvailabilityViewModal"/>
     </data>
@@ -45,10 +49,12 @@
                         android:id="@+id/hostAvailabilityRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        recyclerListAdapter="@{adapter}"
                         android:orientation="vertical"
                         android:clipToPadding="false"
                         android:scrollbars="none"
                         app:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/item_host_availability"
                         tools:itemCount="15"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

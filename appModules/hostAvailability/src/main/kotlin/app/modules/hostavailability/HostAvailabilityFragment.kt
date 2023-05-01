@@ -20,13 +20,22 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import app.modules.hostavailability.adapter.HostAvailabilityListAdapter
 import app.modules.hostavailability.databinding.FragmentHostAvailabilityBinding
+import app.reprator.base_android.util.ItemOffsetDecoration
 import app.reprator.base_android.viewDelegation.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability) {
 
+    @Inject
+    lateinit var hostAvailabilityListAdapter: HostAvailabilityListAdapter
 
     private val binding by viewBinding(FragmentHostAvailabilityBinding::bind)
     private val viewModel: HostAvailabilityViewModal by viewModels()
@@ -35,13 +44,40 @@ class HostAvailabilityFragment : Fragment(R.layout.fragment_host_availability) {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
+            adapter = hostAvailabilityListAdapter
             viewModal = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
+        setUpRecyclerView()
+        initializeObserver()
 
         if (null == savedInstanceState) {
             viewModel.fetchHostAvailability()
         }
     }
 
+    private fun setUpRecyclerView() {
+
+        with(binding.hostAvailabilityRecyclerView) {
+            itemAnimator?.changeDuration = 0
+            itemAnimator = null
+
+            addItemDecoration(
+                ItemOffsetDecoration(requireContext(), R.dimen.list_item_padding)
+            )
+        }
+    }
+
+    private fun initializeObserver() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.hostAvailabilityList.collect {
+                    hostAvailabilityListAdapter.submitList(it)
+                }
+            }
+        }
+
+    }
 }

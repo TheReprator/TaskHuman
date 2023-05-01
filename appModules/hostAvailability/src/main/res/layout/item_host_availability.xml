@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.reprator.base_android.widgets.SwipeLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/hostAvailabilityRootSwipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:autoClose="false"
+        app:designer="@string/classic_designer"
+        app:preview="none">
+
+    <FrameLayout
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:minWidth="@dimen/minimum_width_swipe"
+                android:padding="@dimen/padding_swipe"
+                android:layout_marginTop="@dimen/margin_all_view"
+                android:layout_marginEnd="@dimen/margin_all_view"
+                android:layout_marginStart="0dp"
+                tools:background="@android:color/holo_blue_dark"
+                android:id="@+id/hostAvailabilitySwipeRoot"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+            <ImageView
+                    android:minWidth="@dimen/dimension_minimum_swipe_icon"
+                    android:minHeight="@dimen/dimension_minimum_swipe_icon"
+                    android:id="@+id/hostAvailabilitySwipeIsFavourite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/stat_sys_warning"/>
+
+            <TextView
+                    android:id="@+id/hostAvailabilitySwipeText"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/host_add_favourite"
+                    android:maxLines="2"
+                    android:textColor="@android:color/white"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                tools:background="@android:color/holo_red_dark"
+                android:id="@+id/hostAvailabilityRoot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_all_view"
+                android:padding="@dimen/margin_all_view"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                    android:id="@+id/hostAvailabilityTitle"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{hostAvailability.title}"
+                    tools:text="@sample/hostAvailability.json/skills/tileName"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.constraintlayout.helper.widget.Flow
+                    android:id="@+id/hostAvailabilityHostData"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="hostAvailabilityParticipantPic,hostAvailabilityTime"
+                    app:flow_horizontalGap="@dimen/margin_between_participant_time"
+                    app:flow_maxElementsWrap="2"
+                    android:layout_marginTop="@dimen/margin_top_participant"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/hostAvailabilityTitle"
+            />
+
+            <HorizontalScrollView android:layout_width="0dp"
+                                  android:layout_height="wrap_content"
+                                  android:fillViewport="true"
+                                  android:scrollbars="none"
+                                  android:fadingEdge="none"
+                                  android:id="@+id/hostAvailabilityParticipantPic">
+                <LinearLayout
+                        android:id="@+id/hostAvailabilityParticipantPicContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"/>
+            </HorizontalScrollView>
+
+            <TextView
+                    android:id="@+id/hostAvailabilityTime"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Now - 12:05 AM"
+                    android:drawablePadding="5dp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+                    app:drawableEndCompat="@drawable/icon_time"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                app:strokeWidth="@dimen/stroke_status"
+                app:strokeColor="@android:color/white"
+                android:layout_width="@dimen/size_status"
+                android:layout_height="@dimen/size_status"
+                android:padding="@dimen/padding_status"
+                android:id="@+id/hostAvailabilityStatusView"
+                android:background="@android:color/holo_blue_dark"
+                app:layout_constraintTop_toTopOf="@+id/hostAvailabilityRoot"
+                app:layout_constraintBottom_toTopOf="@+id/hostAvailabilityRoot"
+                app:layout_constraintStart_toStartOf="@+id/hostAvailabilityRoot"
+                app:layout_constraintEnd_toStartOf="@+id/hostAvailabilityRoot"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</app.reprator.base_android.widgets.SwipeLayout>
