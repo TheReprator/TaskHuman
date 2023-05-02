@@ -1,8 +1,10 @@
 package app.modules.hostavailability.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -91,7 +93,20 @@ class VHHostAvailability(
     fun bindItem(hostItem: ModalHostItem) {
         binding.hostAvailabilityTitle.text = hostItem.title
         setAvailabilityTime(hostItem.availability)
-        setParticipantList(hostItem.participantUserList)
+        configureParticipant(hostItem.participantUserList)
+        configureSwipe(hostItem)
+        configureStatus(hostItem.availability.color)
+    }
+
+    private fun configureStatus(color: String) {
+        val statusColor = if(color.isEmpty())
+            Color.BLUE
+        else
+            Color.parseColor(color)
+        binding.hostAvailabilityStatusView.setBackgroundColor(statusColor)
+    }
+
+    private fun configureSwipe(hostItem: ModalHostItem) {
         handleSwipeTextAndIcon(hostItem)
 
         if (hostItem.isSwipeMenuOpened)
@@ -100,12 +115,6 @@ class VHHostAvailability(
             binding.hostAvailabilityRootSwipe.closeEndMenu(false)
 
         setUpMarginForRootContainer(hostItem.isSwipeMenuOpened)
-
-        val statusColor = if(hostItem.availability.color.isEmpty())
-            Color.BLUE
-        else
-            Color.parseColor(hostItem.availability.color)
-        binding.hostAvailabilityStatusView.setBackgroundColor(statusColor)
     }
 
     private fun handleSwipeTextAndIcon(hostItem: ModalHostItem) {
@@ -138,6 +147,21 @@ class VHHostAvailability(
                 setMargins(marginDimen, marginDimen, viewContext().appDimension(R.dimen.margin_end_rootDataContainer), marginDimen)
             else
                 setMargins(marginDimen, marginDimen, marginDimen, marginDimen)
+        }
+    }
+
+    private fun configureParticipant(participantPicList: List<String>) {
+        disableParentScrollOnParticipantTouch()
+        setParticipantList(participantPicList)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun disableParentScrollOnParticipantTouch() {
+        binding.hostAvailabilityParticipantPic.setOnTouchListener { v, event ->
+            if(MotionEvent.ACTION_MOVE == event.action) {
+                v.parent.requestDisallowInterceptTouchEvent(true)
+            }
+            false
         }
     }
 
