@@ -34,14 +34,6 @@ class VHHostAvailability(
 
     val swipeListener = object : SwipeLayout.Listener {
 
-        override fun onSwipe(menuView: View, swipeOffset: Float) {
-            super.onSwipe(menuView, swipeOffset)
-        }
-
-        override fun onSwipeStateChanged(menuView: View, newState: Int) {
-            super.onSwipeStateChanged(menuView, newState)
-        }
-
         override fun onMenuClosed(menuView: View) {
             itemCallback.swipeClose(bindingAdapterPosition)
         }
