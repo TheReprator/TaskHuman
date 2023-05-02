@@ -2,6 +2,7 @@
 <resources>
     <dimen name="padding_swipe">5dp</dimen>
     <dimen name="margin_all_view">15dp</dimen>
+    <dimen name="margin_end_rootDataContainer">-3dp</dimen>
     <dimen name="size_status">20dp</dimen>
     <dimen name="stroke_status">2dp</dimen>
     <dimen name="padding_status">1dp</dimen>

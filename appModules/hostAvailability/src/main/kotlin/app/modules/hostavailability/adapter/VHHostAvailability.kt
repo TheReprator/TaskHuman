@@ -133,9 +133,9 @@ class VHHostAvailability(
     private fun setUpMarginForRootContainer(isOpen: Boolean) {
 
         binding.hostAvailabilityRoot.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            val marginDimen = viewContext().resources.getDimensionPixelSize(R.dimen.margin_all_view)
+            val marginDimen = viewContext().appDimension(R.dimen.margin_all_view)
             if(isOpen)
-                setMargins(marginDimen, marginDimen, 0, marginDimen)
+                setMargins(marginDimen, marginDimen, viewContext().appDimension(R.dimen.margin_end_rootDataContainer), marginDimen)
             else
                 setMargins(marginDimen, marginDimen, marginDimen, marginDimen)
         }
