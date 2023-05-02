@@ -26,10 +26,14 @@ import app.reprator.base_android.widgets.SwipeLayout
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class VHHostAvailability(
     val binding: ItemHostAvailabilityBinding,
-    private val itemCallback: HostAvailabilityItemCallback, private val dateUtils: DateUtils
+    private val coroutineScope: CoroutineScope,
+    private val itemCallback: HostAvailabilityItemCallback,
+    private val dateUtils: DateUtils
 ) : RecyclerView.ViewHolder(binding.root) {
 
     val swipeListener = object : SwipeLayout.Listener {
@@ -57,8 +61,10 @@ class VHHostAvailability(
 
     private fun setCornerForSwipe() {
 
-        val cornerBackground:(shapeAppearanceModel: ShapeAppearanceModel,
-                              fillColor: Int, view: View) -> Unit = { shapeAppearanceModel, fillColor, view ->
+        val cornerBackground: (
+            shapeAppearanceModel: ShapeAppearanceModel,
+            fillColor: Int, view: View
+        ) -> Unit = { shapeAppearanceModel, fillColor, view ->
 
             val materialShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
             materialShapeDrawable.fillColor = viewContext().appColorStateList(fillColor)
@@ -91,7 +97,7 @@ class VHHostAvailability(
     }
 
     private fun configureStatus(color: String) {
-        val statusColor = if(color.isEmpty())
+        val statusColor = if (color.isEmpty())
             Color.BLUE
         else
             Color.parseColor(color)
@@ -110,7 +116,7 @@ class VHHostAvailability(
     }
 
     private fun handleSwipeTextAndIcon(hostItem: ModalHostItem) {
-        val text = if(hostItem.showShortMessage) {
+        val text = if (hostItem.showShortMessage) {
             if (hostItem.isFavourite)
                 R.string.host_short_add
             else
@@ -135,8 +141,13 @@ class VHHostAvailability(
 
         binding.hostAvailabilityRoot.updateLayoutParams<ViewGroup.MarginLayoutParams> {
             val marginDimen = viewContext().appDimension(R.dimen.margin_all_view)
-            if(isOpen)
-                setMargins(marginDimen, marginDimen, viewContext().appDimension(R.dimen.margin_end_rootDataContainer), marginDimen)
+            if (isOpen)
+                setMargins(
+                    marginDimen,
+                    marginDimen,
+                    viewContext().appDimension(R.dimen.margin_end_rootDataContainer),
+                    marginDimen
+                )
             else
                 setMargins(marginDimen, marginDimen, marginDimen, marginDimen)
         }
@@ -150,7 +161,7 @@ class VHHostAvailability(
     @SuppressLint("ClickableViewAccessibility")
     private fun disableParentScrollOnParticipantTouch() {
         binding.hostAvailabilityParticipantPic.setOnTouchListener { v, event ->
-            if(MotionEvent.ACTION_MOVE == event.action) {
+            if (MotionEvent.ACTION_MOVE == event.action) {
                 v.parent.requestDisallowInterceptTouchEvent(true)
             }
             false
@@ -158,28 +169,30 @@ class VHHostAvailability(
     }
 
     private fun setParticipantList(participantPicList: List<String>) {
-        with(binding.hostAvailabilityParticipantPicContainer) {
-            removeAllViews()
+        coroutineScope.launch {
+            with(binding.hostAvailabilityParticipantPicContainer) {
+                removeAllViews()
 
-            val layoutInflator = viewContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val layoutInflator = viewContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-            participantPicList.forEachIndexed { index, item ->
-                val participantView = ItemParticipantPicBinding.inflate(layoutInflator, null, false).root
+                participantPicList.forEachIndexed { index, item ->
+                    val participantView = ItemParticipantPicBinding.inflate(layoutInflator, null, false).root
 
-                val imageDimension = viewContext().appDimension(R.dimen.participant_dimension)
-                val layoutParam = LinearLayout.LayoutParams(imageDimension, imageDimension)
+                    val imageDimension = viewContext().appDimension(R.dimen.participant_dimension)
+                    val layoutParam = LinearLayout.LayoutParams(imageDimension, imageDimension)
 
-                val startMargin = if(0 == index)
-                    0
-                else
-                    viewContext().appDimension(R.dimen.participant_pic_startMargin)
+                    val startMargin = if (0 == index)
+                        0
+                    else
+                        viewContext().appDimension(R.dimen.participant_pic_startMargin)
 
-                layoutParam.setMargins(startMargin, 0, 0, 0)
-                participantView.layoutParams = layoutParam
+                    layoutParam.setMargins(startMargin, 0, 0, 0)
+                    participantView.layoutParams = layoutParam
 
-                addView(participantView)
+                    addView(participantView)
 
-                participantView.imageLoad(item)
+                    participantView.imageLoad(item)
+                }
             }
         }
     }

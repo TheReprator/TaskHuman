@@ -4,12 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import app.modules.hostavailability.databinding.ItemHostAvailabilityBinding
+import app.modules.hostavailability.di.HostAvailabilityModule
 import app.modules.hostavailability.modal.ModalHostItem
 import app.reprator.base.actions.DateUtils
 import app.reprator.base_android.util.GeneralDiffUtil
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
+import javax.inject.Named
 
-class HostAvailabilityListAdapter @Inject constructor(private val itemCallback: HostAvailabilityItemCallback, private val dateUtils: DateUtils) :
+class HostAvailabilityListAdapter @Inject constructor(
+    @Named(HostAvailabilityModule.NAME_SCOPE) private val coroutineScope: CoroutineScope,
+    private val itemCallback: HostAvailabilityItemCallback,
+    private val dateUtils: DateUtils
+) :
     ListAdapter<ModalHostItem, VHHostAvailability>(GeneralDiffUtil<ModalHostItem>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VHHostAvailability {
@@ -17,7 +24,7 @@ class HostAvailabilityListAdapter @Inject constructor(private val itemCallback: 
             LayoutInflater.from(parent.context),
             parent, false
         )
-        return VHHostAvailability(binding, itemCallback, dateUtils)
+        return VHHostAvailability(binding, coroutineScope, itemCallback, dateUtils)
     }
 
     override fun onBindViewHolder(holder: VHHostAvailability, position: Int) {
